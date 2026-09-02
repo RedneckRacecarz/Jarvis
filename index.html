@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="JARVIS" />
+    <meta name="theme-color" content="#05070a" />
+    <title>JARVIS v1</title>
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="boot" class="boot">
+      <div class="boot-ring"></div>
+      <div class="boot-core"></div>
+      <p class="boot-mark">J.A.R.V.I.S.</p>
+      <p class="boot-sub" id="boot-sub">SYSTEM ONLINE</p>
+    </div>
+    <div id="app" class="app" hidden>
+      <header class="top">
+        <div class="top-left">
+          <span class="sigil"></span>
+          <div>
+            <p class="brand">JARVIS</p>
+            <p class="ver">v1 · DISPATCHER</p>
+          </div>
+        </div>
+        <div class="top-right">
+          <time id="clock" class="clock">00:00</time>
+          <span class="live"><i></i> LIVE</span>
+        </div>
+      </header>
+      <main id="screen-home" class="screen active">
+        <section class="hero">
+          <canvas id="viz" width="390" height="220"></canvas>
+          <div class="hero-copy">
+            <p class="kicker">Central dispatcher</p>
+            <h1>Standing by, Mike.</h1>
+            <p class="status-line" id="status-line">Four pillars nominal. Family first.</p>
+          </div>
+        </section>
+        <section class="pillars">
+          <button class="pillar" data-pillar="Family"><span class="p-id">01</span><span class="p-name">Family</span><span class="p-pri">PRIORITY</span></button>
+          <button class="pillar" data-pillar="Work"><span class="p-id">02</span><span class="p-name">Work</span><span class="p-pri">ACTIVE</span></button>
+          <button class="pillar" data-pillar="Business"><span class="p-id">03</span><span class="p-name">Business</span><span class="p-pri">WATCH</span></button>
+          <button class="pillar" data-pillar="Personal"><span class="p-id">04</span><span class="p-name">Personal</span><span class="p-pri">STEADY</span></button>
+        </section>
+        <section class="rules">
+          <p class="kicker">Core rules</p>
+          <ol>
+            <li>Transparency</li>
+            <li>People first</li>
+            <li>Fair play</li>
+            <li>Family first</li>
+            <li>Supportive prototyping</li>
+          </ol>
+        </section>
+      </main>
+      <main id="screen-dispatch" class="screen"><div id="log" class="log"></div></main>
+      <main id="screen-system" class="screen">
+        <section class="sys">
+          <p class="kicker">System</p>
+          <h2>Install on iPhone</h2>
+          <ol class="install">
+            <li>Open this page in Safari</li>
+            <li>Tap Share</li>
+            <li>Add to Home Screen</li>
+          </ol>
+          <dl class="meta">
+            <div><dt>Build</dt><dd>Jarvis v1 HUD</dd></div>
+            <div><dt>Runtime</dt><dd>On-device dispatcher</dd></div>
+            <div><dt>Voice</dt><dd>Web Speech API</dd></div>
+            <div><dt>Cloud brain</dt><dd>Not wired yet</dd></div>
+          </dl>
+          <p class="note">Honest limit: replies are local triage, not a live model. Next pilot is an API handoff. Family still outranks money.</p>
+        </section>
+      </main>
+      <form id="composer" class="composer" autocomplete="off">
+        <input id="input" type="text" enterkeyhint="send" placeholder="Dispatch an order…" maxlength="400" />
+        <button type="button" id="mic" class="mic" aria-label="Voice">MIC</button>
+        <button type="submit" class="send" aria-label="Send">↑</button>
+      </form>
+      <nav class="dock">
+        <button class="dock-btn active" data-screen="home">Home</button>
+        <button class="dock-btn" data-screen="dispatch">Dispatch</button>
+        <button class="dock-btn" data-screen="system">System</button>
+      </nav>
+    </div>
+    <script src="./app.js"></script>
+  </body>
+</html>
