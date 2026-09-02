@@ -1,10 +1,11 @@
 # Jarvis v1
 
-Dark, futuristic iPhone web app. Central dispatcher for Family, Work, Business, Personal.
+Dark iPhone HUD. Live Grok brain via xAI API.
 
-## Open on iPhone
+## Go live
+1. Enable GitHub Pages on this repo (main / root).
+2. Open the Pages URL in Safari.
+3. System → paste an xAI key from https://console.x.ai → Save & test.
+4. Share → Add to Home Screen.
 
-1. Open the GitHub Pages URL once it is enabled, or serve this folder over HTTPS.
-2. Safari → Share → Add to Home Screen.
-
-On-device triage is live. Cloud brain is not wired yet.
+The key never leaves the phone. No key = local dispatcher fallback.
