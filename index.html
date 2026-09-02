@@ -2,247 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#050508">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="description" content="J.A.R.V.I.S. Command Center">
     <title>J.A.R.V.I.S.</title>
     <style>
-        :root {
-            --bg: #050508;
-            --panel: rgba(26, 26, 26, 0.65);
-            --cyan: #00f2ff;
-            --cyan-glow: rgba(0, 242, 255, 0.25);
-            --amber: #ffb300;
-            --text: #e0e6ed;
-            --muted: #8892b0;
-            --border: rgba(0, 242, 255, 0.2);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html, body {
-            width: 100%;
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        body {
-            background: var(--bg) url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect fill="%23121212" width="30" height="30"/><path stroke="%23303030" stroke-width="0.5" d="M0 0h30v30H0Z" opacity="0.3"/></svg>');
-            color: var(--text);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        header {
-            border-bottom: 1px solid var(--border);
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(5, 5, 8, 0.95);
-            backdrop-filter: blur(8px);
-            flex-shrink: 0;
-        }
-
-        .system-title {
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            color: var(--cyan);
-            text-shadow: 0 0 8px var(--cyan-glow);
-        }
-
-        .system-status {
-            font-size: 0.75rem;
-            color: var(--amber);
-            letter-spacing: 1px;
-        }
-
-        .main-container {
-            display: flex;
-            flex: 1;
-            min-height: 0;
-        }
-
-        .sidebar {
-            width: 240px;
-            border-right: 1px solid var(--border);
-            background: var(--panel);
-            backdrop-filter: blur(8px);
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            gap: 12px;
-            overflow-y: auto;
-        }
-
-        .panel-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--cyan);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .btn {
-            background: rgba(0, 242, 255, 0.05);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 8px 12px;
-            text-align: left;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        .btn:active {
-            background: var(--cyan-glow);
-            border-color: var(--cyan);
-            box-shadow: 0 0 8px var(--cyan-glow);
-        }
-
-        .chat-panel {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: rgba(5, 5, 8, 0.4);
-            min-width: 0;
-        }
-
-        .chat-messages {
-            flex: 1;
-            padding: 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .message {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-            word-wrap: break-word;
-        }
-
-        .message.jarvis {
-            align-self: flex-start;
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-left: 3px solid var(--cyan);
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background: rgba(0, 242, 255, 0.08);
-            border: 1px solid rgba(0, 242, 255, 0.25);
-        }
-
-        .chat-input-area {
-            padding: 14px 16px;
-            border-top: 1px solid var(--border);
-            background: rgba(5, 5, 8, 0.95);
-            display: flex;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .chat-input {
-            flex: 1;
-            background: rgba(26, 26, 26, 0.8);
-            border: 1px solid var(--border);
-            border-radius: 3px;
-            padding: 10px;
-            color: var(--text);
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .chat-input:focus {
-            border-color: var(--cyan);
-            box-shadow: inset 0 0 6px var(--cyan-glow);
-        }
-
-        .status-panel {
-            width: 280px;
-            border-left: 1px solid var(--border);
-            background: var(--panel);
-            backdrop-filter: blur(8px);
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            overflow-y: auto;
-        }
-
-        .status-card {
-            background: rgba(10, 10, 15, 0.8);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            padding: 12px;
-        }
-
-        .status-card-header {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            color: var(--muted);
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            font-weight: 600;
-        }
-
-        .status-card-value {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--text);
-        }
-
-        @media (max-width: 1024px) {
-            .sidebar { width: 200px; }
-            .status-panel { width: 240px; }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar, .status-panel { display: none; }
-            .message { max-width: 90%; }
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: rgba(0, 242, 255, 0.15);
-            border-radius: 3px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(0, 242, 255, 0.3);
-        }
+        :root { --bg:#050508; --panel:rgba(26,26,26,.65); --cyan:#00f2ff; --cyan-glow:rgba(0,242,255,.25); --amber:#ffb300; --text:#e0e6ed; --muted:#8892b0; --border:rgba(0,242,255,.2); }
+        *{box-sizing:border-box;margin:0;padding:0}
+        html,body{width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+        body{background:var(--bg);color:var(--text);display:flex;flex-direction:column;overflow:hidden}
+        header{border-bottom:1px solid var(--border);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;background:rgba(5,5,8,.95);flex-shrink:0;gap:12px}
+        .system-title{font-size:1rem;font-weight:700;letter-spacing:2px;color:var(--cyan);text-shadow:0 0 8px var(--cyan-glow)}
+        .system-status{font-size:.75rem;letter-spacing:1px;background:none;border:1px solid var(--border);padding:6px 10px;cursor:pointer;color:var(--amber)}
+        .system-status.live{color:var(--cyan);border-color:var(--cyan)}
+        .main-container{display:flex;flex:1;min-height:0}
+        .sidebar{width:240px;border-right:1px solid var(--border);background:var(--panel);display:flex;flex-direction:column;padding:16px;gap:12px;overflow-y:auto}
+        .panel-title{font-size:.7rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--cyan);margin-bottom:8px;font-weight:600}
+        .btn{background:rgba(0,242,255,.05);border:1px solid var(--border);color:var(--text);padding:8px 12px;text-align:left;border-radius:3px;cursor:pointer;font-size:.8rem;font-weight:500}
+        .btn:active,.btn.on{background:var(--cyan-glow);border-color:var(--cyan)}
+        .chat-panel{flex:1;display:flex;flex-direction:column;min-width:0}
+        .chat-messages{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+        .message{max-width:85%;padding:10px 14px;border-radius:6px;font-size:.9rem;line-height:1.4;word-wrap:break-word;white-space:pre-wrap}
+        .message.jarvis{align-self:flex-start;background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--cyan)}
+        .message.user{align-self:flex-end;background:rgba(0,242,255,.08);border:1px solid rgba(0,242,255,.25)}
+        .message.pending{color:var(--muted)}
+        .chat-input-area{padding:14px 16px;border-top:1px solid var(--border);background:rgba(5,5,8,.95);display:flex;gap:8px;flex-shrink:0}
+        .chat-input,.field{flex:1;background:rgba(26,26,26,.8);border:1px solid var(--border);border-radius:3px;padding:10px;color:var(--text);font-size:.9rem;outline:none;width:100%}
+        .status-panel{width:280px;border-left:1px solid var(--border);background:var(--panel);padding:16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+        .status-card{background:rgba(10,10,15,.8);border:1px solid var(--border);border-radius:4px;padding:12px}
+        .status-card-header{font-size:.7rem;text-transform:uppercase;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;font-weight:600}
+        .status-card-value{font-size:1.1rem;font-weight:bold;color:var(--text)}
+        .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;padding:24px 16px;align-items:flex-start;justify-content:center}
+        .overlay.open{display:flex}
+        .sheet{width:min(440px,100%);background:#0b0d12;border:1px solid var(--border);padding:16px;display:grid;gap:10px}
+        .sheet h2{font-size:.95rem;letter-spacing:2px;color:var(--cyan)}
+        .sheet p{color:var(--muted);font-size:.8rem;line-height:1.4}
+        .row{display:flex;gap:8px}
+        .modes-bar{display:none;gap:6px;padding:8px 12px;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+        @media(max-width:768px){.sidebar,.status-panel{display:none}.modes-bar{display:flex}.message{max-width:90%}.system-title{font-size:.82rem;letter-spacing:1px}}
     </style>
 </head>
 <body>
-
     <header>
         <div class="system-title">J.A.R.V.I.S. // CORE</div>
-        <div class="system-status">OPERATIONAL</div>
+        <button class="system-status" id="statusBtn" onclick="toggleSettings()">LOCAL</button>
     </header>
-
+    <div class="modes-bar">
+        <button class="btn" onclick="setMode('Family')">Family</button>
+        <button class="btn" onclick="setMode('Work')">Work</button>
+        <button class="btn" onclick="setMode('Business')">Business</button>
+        <button class="btn" onclick="setMode('Personal')">Personal</button>
+    </div>
     <div class="main-container">
         <aside class="sidebar">
             <div class="panel-title">Modes</div>
@@ -250,73 +61,75 @@
             <button class="btn" onclick="setMode('Work')">Work</button>
             <button class="btn" onclick="setMode('Business')">Business</button>
             <button class="btn" onclick="setMode('Family')">Family</button>
+            <div class="panel-title" style="margin-top:12px">Brain</div>
+            <button class="btn" onclick="toggleSettings()">Groq key</button>
         </aside>
-
         <main class="chat-panel">
             <div class="chat-messages" id="chat">
-                <div class="message jarvis">Systems operational. Ready to assist.</div>
+                <div class="message jarvis">Systems operational. Save a Groq key to go live. Family first.</div>
             </div>
             <div class="chat-input-area">
-                <input type="text" class="chat-input" id="input" placeholder="Command..." onkeypress="handleKey(event)">
+                <input type="text" class="chat-input" id="input" placeholder="Command..." enterkeyhint="send">
                 <button class="btn" onclick="send()">Send</button>
             </div>
         </main>
-
         <aside class="status-panel">
             <div class="panel-title">Status</div>
             <div class="status-card">
-                <div class="status-card-header"><span>System</span><span style="color: var(--cyan);">Online</span></div>
-                <div class="status-card-value">All Systems</div>
+                <div class="status-card-header"><span>System</span><span id="sysDot" style="color:var(--amber)">Local</span></div>
+                <div class="status-card-value" id="sysVal">Rules only</div>
             </div>
             <div class="status-card">
                 <div class="status-card-header"><span>Priority</span></div>
-                <div class="status-card-value" style="font-size: 0.95rem;">Family First</div>
+                <div class="status-card-value" style="font-size:.95rem">Family First</div>
             </div>
             <div class="status-card">
-                <div class="status-card-header"><span>Latency</span></div>
-                <div class="status-card-value">8ms</div>
+                <div class="status-card-header"><span>Mode</span></div>
+                <div class="status-card-value" id="modeVal" style="font-size:.95rem">Personal</div>
             </div>
         </aside>
     </div>
-
+    <div class="overlay" id="overlay" onclick="if(event.target===this)toggleSettings()">
+        <form class="sheet" id="brainForm" autocomplete="off">
+            <h2>GROQ BRAIN</h2>
+            <p>Key stays on this device. Get one at console.groq.com/keys — no card required.</p>
+            <input class="field" id="apiKey" type="password" placeholder="gsk_…">
+            <select class="field" id="model">
+                <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+                <option value="llama-3.1-8b-instant">llama-3.1-8b-instant</option>
+                <option value="openai/gpt-oss-20b">openai/gpt-oss-20b</option>
+            </select>
+            <div class="row">
+                <button class="btn" type="submit">Save & test</button>
+                <button class="btn" type="button" onclick="clearKey()">Clear</button>
+            </div>
+            <p id="brainNote">No key saved.</p>
+        </form>
+    </div>
     <script>
-        const chat = document.getElementById('chat');
-        const input = document.getElementById('input');
-
-        function send() {
-            const text = input.value.trim();
-            if (!text) return;
-
-            const userMsg = document.createElement('div');
-            userMsg.className = 'message user';
-            userMsg.textContent = text;
-            chat.appendChild(userMsg);
-
-            input.value = '';
-            chat.scrollTop = chat.scrollHeight;
-
-            setTimeout(() => {
-                const jarvisMsg = document.createElement('div');
-                jarvisMsg.className = 'message jarvis';
-                jarvisMsg.textContent = 'Command acknowledged. Processing...';
-                chat.appendChild(jarvisMsg);
-                chat.scrollTop = chat.scrollHeight;
-            }, 300);
-        }
-
-        function handleKey(e) {
-            if (e.key === 'Enter') send();
-        }
-
-        function setMode(mode) {
-            const msg = document.createElement('div');
-            msg.className = 'message jarvis';
-            msg.textContent = `Mode: ${mode}`;
-            chat.appendChild(msg);
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        input.focus();
+        const KEY="jarvis.groq.key";
+        const MODEL="jarvis.groq.model";
+        const API="https://api.groq.com/openai/v1/chat/completions";
+        const SYSTEM=`You are J.A.R.V.I.S., Central Dispatcher for Mike Brown in Surrey, British Columbia.\n\nLife pillars: Family, Work, Business, Personal. Current mode: {{MODE}}.\n\nCore rules:\n1. Transparency — honest disclosure on failures. No cover-ups.\n2. People First — jobs and morale over high-risk growth.\n3. Fair Play — no loopholes or unethical edges.\n4. Family First — family and well-being outrank business and money.\n5. Supportive Prototyping — prefer a low-risk pilot over a hard no.\n\nProtocol: one-line triage (INTENT / PILLAR / PRIORITY), then the answer. Calm, precise, executive. No filler. Timezone America/Vancouver.`;
+        const chat=document.getElementById("chat");
+        const input=document.getElementById("input");
+        const history=[];
+        let mode="Personal";
+        function getKey(){return localStorage.getItem(KEY)||""}
+        function getModel(){return localStorage.getItem(MODEL)||"llama-3.3-70b-versatile"}
+        function live(){return getKey().length>8}
+        function paint(){const on=live();const btn=document.getElementById("statusBtn");btn.textContent=on?"GROQ":"LOCAL";btn.classList.toggle("live",on);document.getElementById("sysDot").textContent=on?"Groq":"Local";document.getElementById("sysDot").style.color=on?"var(--cyan)":"var(--amber)";document.getElementById("sysVal").textContent=on?getModel():"Rules only";document.getElementById("modeVal").textContent=mode;document.getElementById("apiKey").value=getKey();document.getElementById("model").value=getModel();document.getElementById("brainNote").textContent=on?"Brain live. Key stored only in this browser.":"No key saved."}
+        function add(role,text,pending){const el=document.createElement("div");el.className="message "+role+(pending?" pending":"");el.textContent=text;chat.appendChild(el);chat.scrollTop=chat.scrollHeight;return el}
+        function toggleSettings(){document.getElementById("overlay").classList.toggle("open")}
+        function setMode(next){mode=next;paint();add("jarvis","Mode: "+next+". Family still outranks money.")}
+        function localReply(text){const t=text.toLowerCase();if(mode==="Family"||/(kid|child|school|wife|family)/.test(t))return"INTENT logged / PILLAR Family / PRIORITY CRITICAL\nFamily first. Do not trade presence for a deadline.";if(/(cheat|loophole|lie|cover.?up)/.test(t))return"Rejected. Fair play and transparency stand.";return"INTENT logged / PILLAR "+mode+" / PRIORITY NORMAL\nOne next action, then report back. Groq is offline until a key is saved."}
+        async function groqReply(text){const messages=[{role:"system",content:SYSTEM.replace("{{MODE}}",mode)},...history.slice(-16),{role:"user",content:text}];const res=await fetch(API,{method:"POST",headers:{Authorization:"Bearer "+getKey(),"Content-Type":"application/json"},body:JSON.stringify({model:getModel(),messages,temperature:0.4})});const body=await res.json().catch(()=>({}));if(!res.ok){const err=(body.error&&(body.error.message||body.error))||(res.status+" "+res.statusText);throw new Error(String(err))}const reply=(((body.choices||[])[0]||{}).message||{}).content;if(!reply)throw new Error("Empty model response.");history.push({role:"user",content:text});history.push({role:"assistant",content:reply});return reply.trim()}
+        async function send(){const text=input.value.trim();if(!text)return;input.value="";add("user",text);const pending=add("jarvis",live()?"Linking Groq…":"Triage…",true);try{const reply=live()?await groqReply(text):localReply(text);pending.remove();add("jarvis",reply)}catch(err){pending.remove();add("jarvis","Groq failed: "+err.message+"\n\n"+localReply(text))}}
+        async function testBrain(){const key=document.getElementById("apiKey").value.trim();const model=document.getElementById("model").value;if(!key){clearKey();return}localStorage.setItem(KEY,key);localStorage.setItem(MODEL,model);paint();document.getElementById("overlay").classList.remove("open");add("jarvis","Testing "+model+"…");try{const reply=await groqReply("Confirm you are online as Jarvis. One sentence.");add("jarvis",reply)}catch(err){add("jarvis","Probe failed: "+err.message)}}
+        function clearKey(){localStorage.removeItem(KEY);document.getElementById("apiKey").value="";paint();add("jarvis","Key cleared. Local rules only.")}
+        document.getElementById("brainForm").addEventListener("submit",e=>{e.preventDefault();testBrain()});
+        input.addEventListener("keydown",e=>{if(e.key==="Enter")send()});
+        paint();input.focus();
     </script>
 </body>
 </html>
