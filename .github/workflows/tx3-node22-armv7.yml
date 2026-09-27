@@ -30,8 +30,10 @@ jobs:
       - name: Install Android NDK r27d
         run: |
           set -euxo pipefail
-          SDKMANAGER=/usr/local/lib/android/sdk/cmdline-tools/16.0/bin/sdkmanager
-          test -x "$SDKMANAGER"
+          SDKMANAGER="$(find /usr/local/lib/android/sdk -type f -name sdkmanager 2>/dev/null | head -1)"
+          test -n "$SDKMANAGER"
+          chmod +x "$SDKMANAGER" || true
+          "$SDKMANAGER" --version
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" "ndk;27.3.13750724"
           echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> "$GITHUB_ENV"
