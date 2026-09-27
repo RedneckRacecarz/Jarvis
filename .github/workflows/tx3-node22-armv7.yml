@@ -1,0 +1,82 @@
+name: TX3 Node 22 ARMv7 build
+
+on:
+  push:
+    branches:
+      - tx3-node22-linux-builder
+  workflow_dispatch:
+
+jobs:
+  build-node-armv7:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - name: Checkout control repo
+        uses: actions/checkout@v4
+
+      - name: Install 32-bit host toolchain
+        run: |
+          set -euxo pipefail
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt-get install -y             build-essential gcc-multilib g++-multilib libc6-dev-i386             python3 make git curl unzip file binutils
+          printf 'int main(void){return 0;}\n' >/tmp/ia32.c
+          gcc -m32 /tmp/ia32.c -o /tmp/ia32
+          file /tmp/ia32
+          /tmp/ia32
+
+      - name: Install Android NDK r27d
+        run: |
+          set -euxo pipefail
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "ndk;27.3.13750724"
+          echo "NDK=$ANDROID_SDK_ROOT/ndk/27.3.13750724" >> "$GITHUB_ENV"
+
+      - name: Fetch and verify Node 22.23.3 source
+        run: |
+          set -euxo pipefail
+          curl -fL -o SHASUMS256.txt https://nodejs.org/download/release/v22.23.3/SHASUMS256.txt
+          curl -fL -o node-v22.23.3.tar.gz https://nodejs.org/download/release/v22.23.3/node-v22.23.3.tar.gz
+          grep ' node-v22.23.3.tar.gz$' SHASUMS256.txt | sha256sum -c -
+          tar -xzf node-v22.23.3.tar.gz
+
+      - name: Configure Android ARMv7 with IA32 host tools
+        run: |
+          set -euxo pipefail
+          cd node-v22.23.3
+          TC="$NDK/toolchains/llvm/prebuilt/linux-x86_64"
+          export PATH="$TC/bin:$PATH"
+          export CC="$TC/bin/armv7a-linux-androideabi24-clang"
+          export CXX="$TC/bin/armv7a-linux-androideabi24-clang++"
+          export CC_host="gcc -m32"
+          export CXX_host="g++ -m32"
+          export GYP_DEFINES="target_arch=arm v8_target_arch=arm android_target_arch=arm host_arch=ia32 host_os=linux OS=android android_ndk_path=$NDK android_ndk_sysroot=$TC/sysroot host_cxx_is_biarch=1"
+          ./configure             --dest-cpu=arm             --dest-os=android             --openssl-no-asm             --cross-compiling             --with-intl=none
+
+      - name: Build Node executable
+        run: |
+          set -euxo pipefail
+          cd node-v22.23.3
+          TC="$NDK/toolchains/llvm/prebuilt/linux-x86_64"
+          make -j2             "AR.target=$TC/bin/llvm-ar"             "AR.host=ar"             "CC.host=gcc -m32"             "CXX.host=g++ -m32"             "LINK.host=g++ -m32"             "LINK.target=$TC/bin/armv7a-linux-androideabi24-clang++ -static-libstdc++"             node
+
+      - name: Verify candidate
+        run: |
+          set -euxo pipefail
+          BIN=node-v22.23.3/out/Release/node
+          test -x "$BIN"
+          file "$BIN"
+          sha256sum "$BIN" | tee node-armv7.sha256
+          readelf -h "$BIN"
+          readelf -d "$BIN" | tee node-armv7.dynamic.txt
+          cp "$BIN" node-v22.23.3-android-armv7
+
+      - name: Upload candidate and proof
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-v22.23.3-android-armv7
+          path: |
+            node-v22.23.3-android-armv7
+            node-armv7.sha256
+            node-armv7.dynamic.txt
+          if-no-files-found: error
