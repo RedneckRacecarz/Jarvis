@@ -19,11 +19,16 @@ jobs:
           set -euxo pipefail
           sudo dpkg --add-architecture i386
           sudo apt-get update
-          sudo apt-get install -y             build-essential gcc-multilib g++-multilib libc6-dev-i386             python3 make git curl unzip file binutils
+          sudo apt-get install -y \
+            build-essential gcc-multilib g++-multilib libc6-dev-i386 \
+            python3 make git curl unzip file binutils
           printf 'int main(void){return 0;}\n' >/tmp/ia32.c
           gcc -m32 /tmp/ia32.c -o /tmp/ia32
           file /tmp/ia32
           /tmp/ia32
+
+      - name: Set up Android SDK tools
+        uses: android-actions/setup-android@v3
 
       - name: Install Android NDK r27d
         run: |
@@ -51,14 +56,26 @@ jobs:
           export CC_host="gcc -m32"
           export CXX_host="g++ -m32"
           export GYP_DEFINES="target_arch=arm v8_target_arch=arm android_target_arch=arm host_arch=ia32 host_os=linux OS=android android_ndk_path=$NDK android_ndk_sysroot=$TC/sysroot host_cxx_is_biarch=1"
-          ./configure             --dest-cpu=arm             --dest-os=android             --openssl-no-asm             --cross-compiling             --with-intl=none
+          ./configure \
+            --dest-cpu=arm \
+            --dest-os=android \
+            --openssl-no-asm \
+            --cross-compiling \
+            --with-intl=none
 
       - name: Build Node executable
         run: |
           set -euxo pipefail
           cd node-v22.23.3
           TC="$NDK/toolchains/llvm/prebuilt/linux-x86_64"
-          make -j2             "AR.target=$TC/bin/llvm-ar"             "AR.host=ar"             "CC.host=gcc -m32"             "CXX.host=g++ -m32"             "LINK.host=g++ -m32"             "LINK.target=$TC/bin/armv7a-linux-androideabi24-clang++ -static-libstdc++"             node
+          make -j2 \
+            "AR.target=$TC/bin/llvm-ar" \
+            "AR.host=ar" \
+            "CC.host=gcc -m32" \
+            "CXX.host=g++ -m32" \
+            "LINK.host=g++ -m32" \
+            "LINK.target=$TC/bin/armv7a-linux-androideabi24-clang++ -static-libstdc++" \
+            node
 
       - name: Verify candidate
         run: |
