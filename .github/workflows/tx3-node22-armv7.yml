@@ -27,15 +27,15 @@ jobs:
           file /tmp/ia32
           /tmp/ia32
 
-      - name: Set up Android SDK tools
-        uses: android-actions/setup-android@v3
-
       - name: Install Android NDK r27d
         run: |
           set -euxo pipefail
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "ndk;27.3.13750724"
-          echo "NDK=$ANDROID_SDK_ROOT/ndk/27.3.13750724" >> "$GITHUB_ENV"
+          SDKMANAGER=/usr/local/lib/android/sdk/cmdline-tools/16.0/bin/sdkmanager
+          test -x "$SDKMANAGER"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "ndk;27.3.13750724"
+          echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> "$GITHUB_ENV"
+          echo "NDK=/usr/local/lib/android/sdk/ndk/27.3.13750724" >> "$GITHUB_ENV"
 
       - name: Fetch and verify Node 22.23.3 source
         run: |
